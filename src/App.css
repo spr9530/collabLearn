@@ -1,0 +1,25 @@
+.scrollbar-none::-webkit-scrollbar{
+  width: 4px;
+  background-color: transparent;
+}
+.scrollbar-none::-webkit-scrollbar-thumb{
+  background: rgb(148 163 184 / var(--tw-bg-opacity));;
+}
+
+.copy-popup {
+  width: 200px;
+  background-color: #4B5563; /* Slate-500 */
+  color: #FFFFFF; /* Text-white */
+  border: 2px solid #38A169; /* Border-green-200 */
+  padding: 0.75rem;
+  border-radius: 0.375rem; /* Rounded-md */
+  position: absolute;
+  bottom: 2rem;
+  opacity: 1;
+  transition: all 1s ease-in-out; /* Define the transition */
+}
+
+.copy-popup.hide {
+  opacity: 0; /* Hide the popup */
+  transition: all 1s ease-in-out; /* Define the transition */
+}

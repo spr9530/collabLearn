@@ -1,11 +1,9 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import rough from 'roughjs';
 
-function WhiteBoard() {
+function WhiteBoard({socket}) {
 
     const canvas = useRef(null)
-    const ctx = canvas.current
-
     const [tool, setTool] = useState('pencil')
     const [elements, setElements] = useState([]);
     const [isDrawing, setIsDrawing] = useState(false)
@@ -13,9 +11,17 @@ function WhiteBoard() {
     const [future, setFuture] = useState([]);
 
 
+    useEffect(()=>{
+        socket.on('whiteBoard', (data)=>{
+            setElements(data)
+        })
+    }, [])
+
+
     const handleMouseDown = (e) => {
         const { offsetX, offsetY } = e.nativeEvent
 
+        
         let newElement;
         if (tool === 'pencil') {
             newElement = {
@@ -206,6 +212,8 @@ function WhiteBoard() {
                 roughCanvas.circle(ele.offsetX, ele.offsetY, ele.endY, { roughness: 0, stroke: 'white' });
             }
         });
+
+        socket.emit('whiteBoard', elements)
     }, [elements]);
 
     const handleTouchStart = (e) => {

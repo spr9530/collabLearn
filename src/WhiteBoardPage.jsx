@@ -3,7 +3,7 @@ import WhiteBoard from './components/WhiteBoard'
 
 function WhiteBoardPage() {
   return (
-    <div className='h-screen w-screen p-5'>
+    <div className='h-screen w-screen p-5 ' >
         <WhiteBoard/>
     </div>
   )
