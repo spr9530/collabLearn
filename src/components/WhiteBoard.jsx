@@ -1,5 +1,7 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import rough from 'roughjs';
+import { setRoomWhiteBoard } from '../roomSlice/RoomSlice';
+import { useDispatch } from 'react-redux';
 
 function WhiteBoard({socket}) {
 
@@ -15,7 +17,22 @@ function WhiteBoard({socket}) {
         socket.on('whiteBoard', (data)=>{
             setElements(data)
         })
-    }, [])
+    }, [elements])
+
+    function debounce(func, delay) {
+        let timerId;
+        return function(...args) {
+            clearTimeout(timerId);
+            timerId = setTimeout(() => {
+                func.apply(this, args);
+            }, delay);
+        };
+    }
+
+    const debounceEmit = useCallback(debounce((elements)=>{
+        socket.emit('whiteBoard', elements);
+    }, 300), [socket]);
+
 
 
     const handleMouseDown = (e) => {
@@ -191,7 +208,8 @@ function WhiteBoard({socket}) {
         canvasContext.fillRect(0, 0, canvasElement.width, canvasElement.height);
     }, [])
 
-    useLayoutEffect(() => {
+    const dispatch = useDispatch()
+    useEffect(() => {
         const roughCanvas = rough.canvas(canvas.current);
         const canvasBoard = canvas.current;
         const ctx = canvasBoard.getContext('2d');
@@ -213,7 +231,8 @@ function WhiteBoard({socket}) {
             }
         });
 
-        socket.emit('whiteBoard', elements)
+        debounceEmit(elements)
+        dispatch(setRoomWhiteBoard(elements))
     }, [elements]);
 
     const handleTouchStart = (e) => {

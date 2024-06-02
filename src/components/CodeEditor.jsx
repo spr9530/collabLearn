@@ -14,6 +14,8 @@ import 'ace-builds/src-noconflict/mode-c_cpp';
 import 'ace-builds/src-noconflict/mode-markdown';
 import 'ace-builds/src-noconflict/theme-github_dark';
 import 'ace-builds/src-noconflict/theme-cobalt';
+import { addRoomDataAsync, setRoomCodeEditor } from '../roomSlice/RoomSlice';
+import { useDispatch } from 'react-redux';
 
 
 
@@ -29,8 +31,6 @@ function CodeEditor({ socket }) {
         socket.on('codeEditor', (data) => {
             setText(data);
         })
-
-
     }, [])
 
     function debounce(func, delay) {
@@ -47,13 +47,18 @@ function CodeEditor({ socket }) {
         socket.emit('codeEditor', text);
     }, 300), [socket]);
 
+    const dispatch = useDispatch()
     useEffect(() => {
         debouncedEmit(text);
-
+        dispatch(setRoomCodeEditor(text));
     }, [text]);
 
     const handleModeChange = (e) => {
         setMode(e.target.value)
+    }
+
+    const handleSave = () =>{
+        dispatch(addRoomDataAsync(text))
     }
 
     return (
@@ -62,7 +67,7 @@ function CodeEditor({ socket }) {
                 <div className='flex gap-3 justify-center pb-3'>
                     <button className='bg-green-400 text-white p-1 px-5 rounded-md z-30' >Copy</button>
                     <h2 className='text-white text-center text-xl relative z-30'>Code Editor</h2>
-                    <button className='bg-orange-400 text-white p-1 px-5 rounded-md z-30' >Save</button>
+                    <button className='bg-orange-400 text-white p-1 px-5 rounded-md z-30'  onClick={handleSave}>Save</button>
                     <select className='bg-slate-400 text-white p-1 px-5 rounded-md z-30' name="SelectMode" id='modes' >
                         <option value="javascript" defaultValue={mode === 'javascript'} onClick={handleModeChange}>JAVASCRIPT</option>
                         <option value="html" defaultValue={mode === 'html'} onClick={handleModeChange}>HTML</option>

@@ -9,6 +9,8 @@ import {
 import RoomPage from './RoomPage.jsx';
 import CreateRoom from './CreateRoom.jsx';
 import io from 'socket.io-client';
+import store from '../store.js'
+import { Provider } from 'react-redux';
 
 const socket = io('http://localhost:5000');
 
@@ -24,7 +26,7 @@ const router = createBrowserRouter([
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
+  <Provider store={store}>
      <RouterProvider router={router} />
-  </React.StrictMode>,
+  </Provider>,
 )
