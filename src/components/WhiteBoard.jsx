@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import rough from 'roughjs';
-import { setRoomWhiteBoard } from '../roomSlice/RoomSlice';
 import { useDispatch } from 'react-redux';
 
 function WhiteBoard({socket}) {
@@ -232,7 +231,6 @@ function WhiteBoard({socket}) {
         });
 
         debounceEmit(elements)
-        dispatch(setRoomWhiteBoard(elements))
     }, [elements]);
 
     const handleTouchStart = (e) => {

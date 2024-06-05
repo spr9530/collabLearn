@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback } from 'react';
 import AceEditor from 'react-ace';
-import '../App.css'
+import '../App.css';
 
 // Import Ace editor mode and theme files
 import 'ace-builds/src-noconflict/mode-text';
@@ -14,26 +14,35 @@ import 'ace-builds/src-noconflict/mode-c_cpp';
 import 'ace-builds/src-noconflict/mode-markdown';
 import 'ace-builds/src-noconflict/theme-github_dark';
 import 'ace-builds/src-noconflict/theme-cobalt';
-import { addRoomDataAsync, setRoomCodeEditor } from '../roomSlice/RoomSlice';
+import { addRoomDataAsync } from '../roomSlice/RoomSlice';
 import { useDispatch } from 'react-redux';
-
-
-
+import { useParams } from 'react-router-dom';
 
 function CodeEditor({ socket }) {
+    const { id } = useParams();
     const [text, setText] = useState('');
-    const [mode, setMode] = useState('javascript')
+    const [mode, setMode] = useState('javascript');
+    const [isLocalChange, setIsLocalChange] = useState(false);
+
     const handleChange = (newValue) => {
+        setIsLocalChange(true);
         setText(newValue);
     };
-
+    
     useEffect(() => {
-        socket.on('codeEditor', (data) => {
+        const handleCodeEditor = (data) => {
+            setIsLocalChange(false);
             setText(data);
-        })
-    }, [])
+        };
 
-    function debounce(func, delay) {
+        socket.on('codeEditor', handleCodeEditor);
+
+        return () => {
+            socket.off('codeEditor', handleCodeEditor);
+        };
+    }, [socket]);
+
+    const debounce = (func, delay) => {
         let timerId;
         return function(...args) {
             clearTimeout(timerId);
@@ -41,37 +50,39 @@ function CodeEditor({ socket }) {
                 func.apply(this, args);
             }, delay);
         };
-    }
+    };
 
-    const debouncedEmit = useCallback(debounce((text) => {
-        socket.emit('codeEditor', text);
-    }, 300), [socket]);
+    const debouncedEmit = useCallback(debounce((code) => {
+        socket.emit('codeEditor', { id, code });
+    }, 300), [socket, id]);
 
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
+
     useEffect(() => {
-        debouncedEmit(text);
-        dispatch(setRoomCodeEditor(text));
-    }, [text]);
+        if (isLocalChange) {
+            debouncedEmit(text);
+        }
+    }, [text, debouncedEmit, isLocalChange]);
 
     const handleModeChange = (e) => {
-        setMode(e.target.value)
-    }
+        setMode(e.target.value);
+    };
 
-    const handleSave = () =>{
-        dispatch(addRoomDataAsync(text))
-    }
+    const handleSave = () => {
+        dispatch(addRoomDataAsync({ id, text }));
+    };
 
     return (
         <div className='h-full w-full bg-white'>
-            <div className='h-full w-full bg-slate-800 rounded-lg p-4 relative overflow-y-scroll scrollbar-none' >
+            <div className='h-full w-full bg-slate-800 rounded-lg p-4 relative overflow-y-scroll scrollbar-none'>
                 <div className='flex gap-3 justify-center pb-3'>
-                    <button className='bg-green-400 text-white p-1 px-5 rounded-md z-30' >Copy</button>
+                    <button className='bg-green-400 text-white p-1 px-5 rounded-md z-30'>Copy</button>
                     <h2 className='text-white text-center text-xl relative z-30'>Code Editor</h2>
-                    <button className='bg-orange-400 text-white p-1 px-5 rounded-md z-30'  onClick={handleSave}>Save</button>
-                    <select className='bg-slate-400 text-white p-1 px-5 rounded-md z-30' name="SelectMode" id='modes' >
-                        <option value="javascript" defaultValue={mode === 'javascript'} onClick={handleModeChange}>JAVASCRIPT</option>
-                        <option value="html" defaultValue={mode === 'html'} onClick={handleModeChange}>HTML</option>
-                        <option value="html" defaultValue={mode === 'css'} onClick={handleModeChange}>CSS</option>
+                    <button className='bg-orange-400 text-white p-1 px-5 rounded-md z-30' onClick={handleSave}>Save</button>
+                    <select className='bg-slate-400 text-white p-1 px-5 rounded-md z-30' name="SelectMode" id='modes' onChange={handleModeChange} value={mode}>
+                        <option value="javascript">JAVASCRIPT</option>
+                        <option value="html">HTML</option>
+                        <option value="css">CSS</option>
                     </select>
                 </div>
                 <div>
@@ -84,7 +95,7 @@ function CodeEditor({ socket }) {
                         placeholder="Write Your Code"
                         name="UNIQUE_ID_OF_DIV"
                         style={{
-                            backgroundColor: '#1e293a', // Set background color to Slate-400
+                            backgroundColor: '#1e293a',
                             width: '100%',
                             minHeight: '100%',
                             paddingRight: '15px',
@@ -94,7 +105,7 @@ function CodeEditor({ socket }) {
                 </div>
             </div>
         </div>
-    )
+    );
 }
 
-export default CodeEditor
+export default CodeEditor;
