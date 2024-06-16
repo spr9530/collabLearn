@@ -17,21 +17,36 @@ import 'ace-builds/src-noconflict/theme-cobalt';
 import { addRoomDataAsync } from '../roomSlice/RoomSlice';
 import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router-dom';
+import io from 'socket.io-client';
+import { updateEditor } from '../roomSlice/RoomApi';
 
-function CodeEditor({ socket }) {
-    const { id } = useParams();
+const socket = io('http://localhost:5000');
+
+
+function CodeEditor({data}) {
+    const { id1, id2} = useParams();
     const [text, setText] = useState('');
     const [mode, setMode] = useState('javascript');
     const [isLocalChange, setIsLocalChange] = useState(false);
+
+    console.log(id1)
 
     const handleChange = (newValue) => {
         setIsLocalChange(true);
         setText(newValue);
     };
+
+    useEffect(()=>{
+        if(data){
+            setText(data)
+        }
+        socket.emit('joinRoom', (id1))
+    },[])
     
     useEffect(() => {
         const handleCodeEditor = (data) => {
             setIsLocalChange(false);
+            console.log(data)
             setText(data);
         };
 
@@ -53,14 +68,21 @@ function CodeEditor({ socket }) {
     };
 
     const debouncedEmit = useCallback(debounce((code) => {
-        socket.emit('codeEditor', { id, code });
-    }, 300), [socket, id]);
+        socket.emit('codeEditor', { id1, code });
+    }, 300), [socket, id1]);
 
+
+    const debouncedUpdate = useCallback(debounce(async(info)=>{
+        await updateEditor(info)
+    }, 500), [id1])
+    
     const dispatch = useDispatch();
 
     useEffect(() => {
         if (isLocalChange) {
             debouncedEmit(text);
+            const id = id2
+            debouncedUpdate({id, text})
         }
     }, [text, debouncedEmit, isLocalChange]);
 
@@ -69,7 +91,7 @@ function CodeEditor({ socket }) {
     };
 
     const handleSave = () => {
-        dispatch(addRoomDataAsync({ id, text }));
+        dispatch(addRoomDataAsync({ id1, text }));
     };
 
     return (
@@ -78,7 +100,7 @@ function CodeEditor({ socket }) {
                 <div className='flex gap-3 justify-center pb-3'>
                     <button className='bg-green-400 text-white p-1 px-5 rounded-md z-30'>Copy</button>
                     <h2 className='text-white text-center text-xl relative z-30'>Code Editor</h2>
-                    <button className='bg-orange-400 text-white p-1 px-5 rounded-md z-30' onClick={handleSave}>Save</button>
+                    <button className='bg-orange-400 text-white p-1 px-5 rounded-md z-30' onClick={handleSave}>New Version</button>
                     <select className='bg-slate-400 text-white p-1 px-5 rounded-md z-30' name="SelectMode" id='modes' onChange={handleModeChange} value={mode}>
                         <option value="javascript">JAVASCRIPT</option>
                         <option value="html">HTML</option>

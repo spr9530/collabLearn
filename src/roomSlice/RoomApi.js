@@ -1,3 +1,4 @@
+
 export const addRoomData = (data) => {
     return new Promise((resolve, reject) => {
         fetch('http://localhost:5000/api/v1/room/saveData', {
@@ -41,19 +42,19 @@ export const createRoomApi = (info) => {
             })
             const data = await response.json()
 
-            resolve({ data })
+            resolve( data )
         } catch (error) {
             reject({ error })
         }
     })
 }
 
-export const getRoomData = (roomCode) => {
+export const getRoomData = (roomId) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const response = await fetch(`http://localhost:5000/app/v1/room/${roomCode}`)
+            const response = await fetch(`http://localhost:5000/app/v1/room/${roomId}`)
             if (!response.ok) {
-                reject({ error: 'erro in reponse' })
+                reject({ error: await response.json() })
             }
 
             const data = await response.json();
@@ -64,7 +65,7 @@ export const getRoomData = (roomCode) => {
     })
 }
 
-export const updateRoomUsers = ({ id, users }) => {
+export const updateRoomUsers = ({ id2:id, users }) => {
     return new Promise(async (resolve, reject) => {
         try {
             const response = await fetch(`http://localhost:5000/app/v1/room/${id}`, {
@@ -87,7 +88,6 @@ export const updateRoomUsers = ({ id, users }) => {
 
 export const getRoomInfo = async(roomCode) => {
         try {
-            console.log(roomCode)
             const response = await fetch(`http://localhost:5000/app/v1/room/${roomCode}`)
             if (!response.ok) {
                 return({ error: 'erro in reponse' })
@@ -98,4 +98,81 @@ export const getRoomInfo = async(roomCode) => {
         } catch (error) {
             return({ error })
         }
+}
+
+export const createRoomFile = async({roomId, name, type}) =>{
+    try{
+
+        const token = localStorage.getItem('token')
+        const createData = await fetch(`http://localhost:5000/app/v1/room/createData/${roomId}`,{
+            method:'POST',
+            headers:{
+                'Content-Type': 'application/json'
+            },
+            body:JSON.stringify({
+                name,
+                type
+            })
+        })
+
+        const data = await createData.json()
+        console.log(data)
+        return;
+
+    }catch(error){
+        return ({error})
+    }
+}
+
+export const getRoomFiles = async (roomId) => {
+    try {
+      const response = await fetch(`http://localhost:5000/app/v1/room/getRoomData/${roomId}`);
+      
+      if (!response.ok) {
+        return{ error: `Error fetching room files: ${response.statusText}` };
+      }
+      
+      const files = await response.json();
+      return { files };
+    } catch (error) {
+      return { error: error.message };
+    }
+  };
+  
+
+export const getEditor = async(id) =>{
+    try{
+        console.log('called')
+        const fetchEditor = await fetch(`http://localhost:5000/app/v1/room/getRoomEditor/${id}`)
+        
+        const data = await fetchEditor.json();
+        
+        return (data)
+
+    }catch(error){
+        return ({error})
+    }
+}
+
+export const updateEditor = async({id, text:roomData}) =>{
+    try{
+        console.log(id, roomData)
+        const update = await fetch(`http://localhost:5000/app/v1/room/updateRoomEditors/${id}`,{
+            method:'POST',
+            headers:{
+                'Content-Type': 'application/json'
+            },
+            body:JSON.stringify({
+                roomData
+            })
+        })
+
+        const data = await update.json();
+
+        return (data)
+
+
+    }catch(error){
+        return ({error})
+    }
 }

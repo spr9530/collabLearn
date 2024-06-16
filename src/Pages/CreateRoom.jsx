@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import '../App.css'
-import { Link, Navigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getUser } from '../user/userSlice';
 import { useForm } from "react-hook-form";
@@ -11,16 +11,15 @@ import { createRoomApi } from '../roomSlice/RoomApi';
 
 function CreateRoom({ socket }) {
 
-    const dispatch = useDispatch()
+    const navigate = useNavigate()
 
     const [code, setCode] = useState('')
     const [joinCode, setJoinCode] = useState('')
+    const [showPopup, setShowPopup] = useState(false);
 
     const { register, handleSubmit } = useForm();
-
     const user = useSelector(getUser)
 
-    const [showPopup, setShowPopup] = useState(false);
     const generateCode = () => {
         let s1 = Math.floor(Math.random() * (999 - 100 + 1)) + 100;
         let s2 = Math.floor(Math.random() * (999 - 100 + 1)) + 100;
@@ -58,7 +57,7 @@ function CreateRoom({ socket }) {
         const getUserInfo = async () => {
             try {
                 if (!token) {
-                    throw new Error('Please Login First')
+                    navigate('/')
                 }
                 const response = await fetch('http://localhost:5000/app/v1/user/getUserInfo', {
                     method: 'POST',
@@ -78,7 +77,7 @@ function CreateRoom({ socket }) {
         getUserInfo()
     }, [])
 
-    const[roomCreated, setRoomCreated] = useState(false)
+    const [roomCreated, setRoomCreated] = useState(false)
     const createRoom = async (info) => {
         const response = await createRoomApi(info);
         if (response.data.error) {
@@ -91,7 +90,7 @@ function CreateRoom({ socket }) {
                 'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify({
-                rooms: [...userInfo.rooms, {_id: response.data.roomInfo._id}]
+                rooms: [...userInfo.rooms, { _id: response.data.roomInfo._id }]
             })
         })
 
@@ -108,6 +107,8 @@ function CreateRoom({ socket }) {
     }
 
     const roomInfo = useSelector(selectRoomInfo)
+
+
 
     return (
         <>

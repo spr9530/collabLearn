@@ -1,65 +1,19 @@
-import React, { useEffect, useState } from 'react'
-import io from 'socket.io-client';
-import { getUserInfo } from '../user/userApi';
-import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
-
-const socket = io('http://localhost:5000');
-
-
+import React from 'react'
+import { IoCloseCircle } from "react-icons/io5";
 
 function Temp() {
-  const [userInfo, setUserInfo] = useState(null)
-  const location = useLocation();
-  const [allowed, setAllowed] = useState(false)
-  const code= location.state || {}
-  if(code){
-    console.log(code)
-  }
-
-  useEffect(() => {
-    const getUser = async () => {
-      const userInfo = await getUserInfo()
-      setUserInfo(userInfo)
-    }
-    getUser()
-  }, [])
-  useEffect(() => {
-
-    socket.emit('roomCreate', code);
-
-    socket.on('userAllowed', (code) => {
-       setAllowed(true)
-    });
-    
-    return () => {
-        socket.off('userAllowed');
-        
-    };
-
-}, [socket]);
-
-  if (!userInfo) {
-    return (<>loada...</>)
-  }
-
-  const handleJoinUser = () => {
-    socket.emit('permissionToJoin', {code, userInfo})
-    console.log('temp', userInfo)
-  }
-
-  if(allowed){
-    return (<>{ <Navigate to={`/room/${code}`} replace={true} /> }</>)
-  }
-
-  if (userInfo) {
-    return (
-      <div className='flex flex-col justify-center items-center'>
-        <div>Ask permission</div>
-        <button onClick={handleJoinUser}>join</button>
+  return (
+    <div className='h-[200px] w-7/12 rounded-md fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-primaryBackground z-20 p-3 flex flex-col'>
+      <div className='w-full p-2 flex justify-between'>
+        <h2 className='text-white text-4xl font-bold'>Join Room</h2>
+        <button> <IoCloseCircle className='text-white text-xl' /></button>
       </div>
-
-    )
-  }
+      <div className='flex gap-3 h-full items-center p-2'>
+        <input className='rounded-lg py-3 px-2 bg-secondaryBackground text-white w-9/12 outline-none' type="text" placeholder='Enter Room Code'/>
+        <button className='rounded-lg py-3 px-2 bg-pink-600 text-white w-3/12'>Join</button>
+      </div>
+    </div>
+  )
 }
 
 export default Temp

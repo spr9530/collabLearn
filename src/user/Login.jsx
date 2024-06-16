@@ -21,9 +21,12 @@ function Login() {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const from = location.state?.from|| '/creatRoom'
+  console.log(location.state?.from)
   const user = useSelector(getUser)
   const [redirect, setRedirect] = useState(false)
   const [loggedIn, setLoggedIn] = useState(false)
+
 
   useEffect(()=>{
     console.log(localStorage.getItem('token'))
@@ -41,7 +44,7 @@ function Login() {
   },[user])
 
   if(loggedIn){
-    return(<Navigate to='/creatRoom' replace={true}/>)
+    return(navigate(from, { replace: true }))
   }
 
   

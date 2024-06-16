@@ -14,25 +14,35 @@ import { Provider } from 'react-redux';
 import Login from './user/Login.jsx';
 import Temp from './components/Temp.jsx';
 import PermissionPage from './Pages/PermissionPage.jsx';
+import EditorPage from './Pages/EditorPage.jsx';
+import HomePage from './Pages/HomePage.jsx';
 
 const socket = io('http://localhost:5000');
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Login />,
+    element: <HomePage socket={socket}/>,
+  },
+  {
+    path:"login",
+    element: <Login/>
   },
   {
     path: "/creatRoom",
     element: <CreateRoom socket={socket}/>,
   },
   {
-    path: "/room/:id",
+    path: "/room/:id1/:id2",
     element: <RoomPage socket={socket}/>,
   },
   {
     path: "/askPermission",
     element:<PermissionPage/>
+  },
+  {
+    path: "/room/:id1/:id2/:id3",
+    element:<EditorPage/>
   }
 ]);
 

@@ -59,6 +59,7 @@ export const getUserInfo = async () => {
         return userInfo
     } catch (error) {
         console.log({ error })
+        return({error})
     }
 }
 
@@ -76,7 +77,7 @@ export const updateUserApi = async (rooms) => {
             })
         })
         const data = await updateUser.json()
-        return ({data})
+        return (data)
     }catch(error){
         console.log(error)
     }
