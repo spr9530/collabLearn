@@ -31,7 +31,7 @@ socket.on('disconnect', () => {
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <HomePage socket={socket}/>,
+    element: <HomePage/>,
   },
   {
     path:"/login",
