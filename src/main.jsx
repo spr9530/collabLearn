@@ -16,6 +16,8 @@ import Temp from './components/Temp.jsx';
 import PermissionPage from './Pages/PermissionPage.jsx';
 import EditorPage from './Pages/EditorPage.jsx';
 import HomePage from './Pages/HomePage.jsx';
+import SignUp from './user/SignUp.jsx';
+import MeetingPage from './Pages/MeetingPage.jsx';
 
 const socket = io('http://localhost:5000');
 
@@ -25,8 +27,12 @@ const router = createBrowserRouter([
     element: <HomePage socket={socket}/>,
   },
   {
-    path:"login",
+    path:"/login",
     element: <Login/>
+  },
+  {
+    path:"/signUp",
+    element: <SignUp/>
   },
   {
     path: "/creatRoom",
@@ -43,7 +49,16 @@ const router = createBrowserRouter([
   {
     path: "/room/:id1/:id2/:id3",
     element:<EditorPage/>
-  }
+  },
+  {
+    path: "/room/:roomId/meeting/:roomCode",
+    element:<MeetingPage socket={socket}/>
+  },
+  {
+    path: "/room/temp",
+    element:<Temp socket={socket}/>
+  },
+
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(

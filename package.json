@@ -11,8 +11,10 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.5",
+    "dotenv": "^16.4.5",
     "jodit-react": "^4.1.2",
     "local-storage": "^2.0.0",
+    "peerjs": "^1.5.4",
     "react": "^18.2.0",
     "react-ace": "^11.0.1",
     "react-dom": "^18.2.0",

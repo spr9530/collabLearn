@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import Temp from '../components/Temp'
 import { FaCircleArrowRight } from "react-icons/fa6";
 import { FaRegBell } from "react-icons/fa";
@@ -6,11 +6,10 @@ import { IoCloseCircle } from "react-icons/io5";
 import { FaCirclePlus } from "react-icons/fa6";
 import { IoMdPeople } from "react-icons/io";
 import { FaPencilRuler } from "react-icons/fa";
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { getUserInfo, updateUserApi } from '../user/userApi';
-import { createRoomApi, getRoomData } from '../roomSlice/RoomApi';
-import TaskInfo from '../components/TaskInfo';
+import { createRoomApi, roomPermission } from '../roomSlice/RoomApi';
 
 function HomePage({ socket }) {
 
@@ -24,25 +23,28 @@ function HomePage({ socket }) {
     useEffect(() => {
         const getUser = async () => {
             const userInfo = await getUserInfo()
+            if (userInfo.error) {
+                navigate('/login', { replace: true })
+            }
             setUserInfo(userInfo)
         }
+
         getUser()
     }, [])
 
-    const handleJoinRoom = (e) => {
-        e.preventDefault()
-        setJoinRoomDisplay('visible')
-    }
-
-
-    const handleCreateRoom = (e) => {
+    const handleJoinRoom = useCallback((e) => {
         e.preventDefault();
-        setCreateRoomDisplay('visible')
-    }
+        setJoinRoomDisplay('visible');
+    }, []);
 
-    const handleRoomCard = async (room) => {
-        navigate(`/room/${room._id}/${room.roomCode}`)
-    }
+    const handleCreateRoom = useCallback((e) => {
+        e.preventDefault();
+        setCreateRoomDisplay('visible');
+    }, []);
+
+    const handleRoomCard = useCallback((room) => {
+        navigate(`/room/${room._id}/${room.roomCode}`);
+    }, [navigate]);
 
     if (!userInfo) {
         return <>Loading....</>
@@ -54,8 +56,8 @@ function HomePage({ socket }) {
             <CreateRoom user={userInfo} visible={createRoomDisplay} setVisible={setCreateRoomDisplay} socket={socket} setUser={setUserInfo} />
             <div>
                 <div className='bg-primaryBackground w-full flex gap-2 justify-center '>
-                    <div className='w-9/12 shadow-primaryBoxShadow m-2 p-4 rounded-md h-screen overflow-scroll scrollbar-none'>
-                        <div className='bg-secondaryBackground p-4 rounded-md m-2'>
+                    <div className='w-full flex shadow-primaryBoxShadow m-2 p-4 rounded-md h-screen overflow-scroll scrollbar-none'>
+                        <div className='w-1/2 bg-secondaryBackground p-4 rounded-md m-2'>
                             <div className='flex w-full justify-between'>
                                 <h2 className='text-white text-3xl font-bold'>Rooms</h2>
                                 <div className='flex gap-2'>
@@ -72,30 +74,16 @@ function HomePage({ socket }) {
 
                             </div>
                         </div>
-                        <div className='bg-secondaryBackground p-4 rounded-md m-2'>
+                        <div className='w-1/2 bg-secondaryBackground p-4 rounded-md m-2'>
                             <div className='flex w-full justify-between'>
                                 <h2 className='text-white text-3xl font-bold'>Tasks</h2>
                             </div>
                             <div className='flex flex-wrap gap-3 my-2'>
-                                {/* <TaskInfo />
-                                <TaskInfo />
-                                <TaskInfo />
-                                <TaskInfo /> */}
+                                
                             </div>
                         </div>
                     </div>
-                    <div className="w-3/12 shadow-primaryBoxShadow h-screen relative top-0 right-0 m-2 p-4 rounded-md flex flex-col">
-                        <h2 className='text-white text-2xl font-bold flex items-center h-fit w-full justify-between'>Notification <span className='text-yellow-600'><FaRegBell /></span> </h2>
-                        <div className='py-2 h-full w-full overflow-scroll scrollbar-none flex flex-col gap-2'>
-                            <Notification />
-                            <Notification />
-                            <Notification />
-                            <Notification />
-                            <Notification />
-                            <Notification />
-
-                        </div>
-                    </div>
+                    
                 </div>
             </div>
         </>
@@ -119,29 +107,37 @@ function RoomInfoCard({ room }) {
     )
 }
 
-function Notification() {
-    return (
-        <div className=' h-fit w-full rounded-md bg-[#ffffffcf] p-2cursor-pointer'>
-            <div className='flex flex-col justify-between h-full  p-2'>
-                <div>
-                    <h3 className='text-primaryBackground text-md font-semibold'>from</h3>
-                </div>
-                <p className='text-secondaryBackground text-[8px]'>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Repudiandae sunt, aut illo praesentium repellendus ad?</p>
-            </div>
-        </div>
-    )
-}
+// function Notification() {
+//     return (
+//         <div className=' h-fit w-full rounded-md bg-[#ffffffcf] p-2cursor-pointer'>
+//             <div className='flex flex-col justify-between h-full  p-2'>
+//                 <div>
+//                     <h3 className='text-primaryBackground text-md font-semibold'>from</h3>
+//                 </div>
+//                 <p className='text-secondaryBackground text-[8px]'>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Repudiandae sunt, aut illo praesentium repellendus ad?</p>
+//             </div>
+//         </div>
+//     )
+// }
 
 function JoinRoom({ visible, setVisible, socket, user }) {
 
     const navigate = useNavigate()
+    const { id1 } = useParams();
     const [code, setCode] = useState('')
     const [joinBtn, setJoinBtn] = useState('Join')
 
-    const handleUserJoin = (code) => {
-        setJoinBtn('Wait...')
-        socket.emit('joinRoom', code)
-        socket.emit('permissionToJoin', { code, user })
+    const handleUserJoin = async (code) => {
+        try {
+            setJoinBtn('Wait...');
+
+            const response = await roomPermission({ roomCode: code, user });
+
+            socket.emit('updateRequests', code);
+
+        } catch (error) {
+            console.error('An error occurred:', error);
+        }
     }
 
     useEffect(() => {

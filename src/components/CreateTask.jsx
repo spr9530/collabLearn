@@ -4,13 +4,14 @@ import { IoCloseCircle } from 'react-icons/io5';
 import { useParams } from 'react-router-dom';
 import { createRoomTask } from '../task/TaskApi';
 
-function CreateTask({ visibility, setVisibility, roomInfo }) {
+function CreateTask({ visibility, setVisibility, roomInfo, fetchTask }) {
 
     const { id1 } = useParams()
     const users = roomInfo.users
     const [steps, setSteps] = useState([]);
     const [addedUsers, setAddedUsers] = useState([])
     const [show, setShow] = useState('hidden')
+    const [createError, setCreateError] = useState(null)
     const { register,
         handleSubmit,
         control, // used in maing array in form
@@ -61,8 +62,14 @@ function CreateTask({ visibility, setVisibility, roomInfo }) {
             users: addedUsers,
             taskDate: data.taskDate
         }
-        const newTask = await createRoomTask(task)
-        setVisibility('hidden')
+        try {
+            const response = await createRoomTask(task);
+            await fetchTask()
+            setVisibility('hidden');
+        } catch (error) {
+            console.error('Error creating task:', error);
+            setCreateError('Error creating task')
+        }        
     }
 
     const today = new Date().toISOString().split('T')[0];
@@ -128,7 +135,7 @@ function CreateTask({ visibility, setVisibility, roomInfo }) {
 
                         </div>
                     </div>
-
+                    {createError && <p className='text-red-600 text-center'>{createError}</p>}
                     <div className='w-full '>
                         <div className='flex flex-col w-full justify-evenly'>
 
@@ -174,6 +181,8 @@ function CreateTask({ visibility, setVisibility, roomInfo }) {
                     </div>
                 </form>
             </div>
+
+            
         </div>
     )
 }

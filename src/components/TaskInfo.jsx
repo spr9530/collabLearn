@@ -135,7 +135,7 @@ function ViewTask({ taskInfo, taskUpdated, setTaskUpdated, visibility, setVisibi
                     </div>
                 </div>
                 <div className='w-full my-2'>
-                    <form onSubmit={handleSubmit((data) => {
+                    {taskInfo.taskStep[0] ? <form onSubmit={handleSubmit((data) => {
                         handleUpdateTask(data)
                     })} className='w-full'>
                         <div className='w-full flex justify-between items-center'>
@@ -173,7 +173,9 @@ function ViewTask({ taskInfo, taskUpdated, setTaskUpdated, visibility, setVisibi
                                 </div>
                             </div>
                         )) : <div>No steps</div>}
-                    </form>
+                    </form> :
+                        <button type='submit' className='p-1 rounded-md bg-primaryGreen'>Done</button>
+                    }
                 </div>
             </div>
         </div>

@@ -1,9 +1,7 @@
-import('dotenv').config
-
 export const checkUser = (token) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const response = await fetch('https://collab-learn-backend-blond.vercel.app/app/v1/user/checkUser', {
+            const response = await fetch('http://localhost:5000/app/v1/user/checkUser', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -22,7 +20,7 @@ export const checkUser = (token) => {
 export const checkUserName = (userName) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const check = await fetch(`https://collab-learn-backend-blond.vercel.app/app/v1/user/usernames?userName=${userName}`)
+            const check = await fetch(`http://localhost:5000/app/v1/user/usernames?userName=${userName}`)
 
             const unique = await check.json()
 
@@ -37,7 +35,7 @@ export const checkUserName = (userName) => {
 
 export const generateUserOtp = async (email) => {
     try {
-        const response = await fetch('https://collab-learn-backend-blond.vercel.app/app/v1/user/otp', {
+        const response = await fetch('http://localhost:5000/app/v1/user/otp', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -59,7 +57,7 @@ export const generateUserOtp = async (email) => {
 
 export const verifyUserOtp = async ({ otp, email }) => {
     try {
-        const response = await fetch('https://collab-learn-backend-blond.vercel.app/app/v1/user/otp/verify', {
+        const response = await fetch('http://localhost:5000/app/v1/user/otp/verify', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -82,7 +80,7 @@ export const verifyUserOtp = async ({ otp, email }) => {
 
 export const addUser = async (data) => {
     try {
-        const response = await fetch('https://collab-learn-backend-blond.vercel.app/app/v1/user/addUser', {
+        const response = await fetch('http://localhost:5000/app/v1/user/addUser', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -106,7 +104,7 @@ export const addUser = async (data) => {
 export const userLogginApi = (userCredentials) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const response = await fetch('https://collab-learn-backend-blond.vercel.app/app/v1/user/logginUser', {
+            const response = await fetch('http://localhost:5000/app/v1/user/logginUser', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -133,8 +131,8 @@ export const getUserInfo = async () => {
         if (!token) {
             throw new Error('Please Login First')
         }
-        const response = await fetch('https://collab-learn-backend-blond.vercel.app/app/v1/user/getUserInfo', {
-            method: 'GET',
+        const response = await fetch('http://localhost:5000/app/v1/user/getUserInfo', {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
@@ -152,7 +150,7 @@ export const getUserInfo = async () => {
 export const updateUserApi = async (rooms) => {
     const token = localStorage.getItem('token')
     try {
-        const updateUser = await fetch('https://collab-learn-backend-blond.vercel.app/app/v1/user/updateUser', {
+        const updateUser = await fetch('http://localhost:5000/app/v1/user/updateUser', {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
@@ -169,6 +167,18 @@ export const updateUserApi = async (rooms) => {
     }
 }
 
+const clientId = process.env.CLIENT_ID;
+const clientSecret = process.env.CLIENT_SECRET;
 
+export const handleGitHubLogin = async () => {
+    const redirectUri = 'http://localhost:5000/app/v1/user/github/callback';
+    try {
+        const url = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=repo`;
+        res.redirect(url);
+    } catch (error) {
+        console.error('Error during GitHub login:', error);
+        res.status(500).json({ error: 'Failed to initiate GitHub login' });
+    }
+  };
   
 

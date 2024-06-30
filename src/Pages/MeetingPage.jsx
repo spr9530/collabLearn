@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-
 import Peer from 'peerjs';
-import { getUserInfo } from '../user/userApi'; 
+import { getUserInfo } from '../user/userApi';
 import { useParams } from 'react-router-dom';
-function Temp({socket}) {
+
+function MeetingPage({socket}) {
     const myVideo = useRef(null);
     const userVideo = useRef(null);
     const [userInfo, setUserInfo] = useState(null);
@@ -59,7 +59,7 @@ function Temp({socket}) {
         peerInstance.on('call', (call) => {
             navigator.mediaDevices.getUserMedia({
                 video: true,
-                audio: true,
+                audio: false,
             }).then((stream) => {
                 call.answer(stream);
                 call.on('stream', (remoteStream) => {
@@ -81,7 +81,7 @@ function Temp({socket}) {
     // Example function to call another Peer
     const callPeer = (peerId) => {
         navigator.mediaDevices.getUserMedia({
-            video: true,
+            video: false,
             audio: true,
         }).then((stream) => {
             const call = peer.current.call(peerId, stream);
@@ -113,4 +113,4 @@ function Temp({socket}) {
     );
 }
 
-export default Temp;
+export default MeetingPage;

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { getEditor } from '../roomSlice/RoomApi';
 import CodeEditor from '../components/CodeEditor';
-import WhiteBoard from '../components/WhiteBoard';
 import { getUserInfo } from '../user/userApi';
 import TextEditor from '../components/TextEditor';
 
@@ -19,31 +18,29 @@ function EditorPage() {
   useEffect(() => {
     const fetchEditor = async () => {
       const response = await getEditor(id3)
-      console.log(response)
       setEditorInfo(response.response)
     }
 
     const token = localStorage.getItem('token')
     const getUser = async () =>{
       const user = await getUserInfo(token)
-      console.log(user)
     }
     getUser()
     fetchEditor()
   }, [])
 
   if(!localStorage.getItem('token')){
-    navigate('/', { replace: true, state: { from: 'home' } })
+    navigate('/login', { replace: true, state: { from: 'home' } })
   }
 
   if(!editorInfo){
     return <>Lodaing.....</>
   }
 
-  if(editorInfo.editorType === 'code'){
-    return <CodeEditor  data={editorInfo.roomData? editorInfo.roomData: null}/>
-  }else if(editorInfo.editorType === 'text'){
-    return <TextEditor/>
+  if(editorInfo.type === 'code'){
+    return <CodeEditor  data={editorInfo.roomData? editorInfo.roomData: null} versionHistory={editorInfo.history} version={editorInfo.version}/>
+  }else if(editorInfo.type === 'text'){
+    return <TextEditor data={editorInfo.roomData? editorInfo.roomData: null}/>
   }
 
   return (

@@ -1,30 +1,26 @@
-export const createRoomTask = (task) => {
-  return new Promise(async (resolve, reject) => {
-    const token = localStorage.getItem('token');
-    try {
-      const response = await fetch(`http://localhost:5000/app/v1/task/createTask`, {
-        method: 'POST', // Use POST for creating new resources
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(task),
-      });
+export const createRoomTask = async (task) => {
+  const token = localStorage.getItem('token');
+  
+  try {
+    const response = await fetch(`http://localhost:5000/app/v1/task/createTask`, {
+      method: 'POST', // Use POST for creating new resources
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(task),
+    });
 
-      console.log(response);
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        reject({ error: errorData.message || response.statusText });
-      } else {
-        const data = await response.json();
-        resolve(data);
-      }
-    } catch (error) {
-      console.log(error);
-      reject({ error: error.message });
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || response.statusText);
     }
-  });
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw new Error(error.message);
+  }
 };
 
 export const getAllTask = (id) => {
