@@ -19,6 +19,7 @@ function HomePage() {
     const [createRoomDisplay, setCreateRoomDisplay] = useState('hidden')
     const [userInfo, setUserInfo] = useState(null)
     const navigate = useNavigate()
+    const[socket, setSocket} = useState(null)
 
 
 
@@ -32,12 +33,12 @@ function HomePage() {
         }
 
         getUser()
-    const socket = io('https://collab-learn-backend-blond.vercel.app/');
-        socket.on('connection', ()=>{
-            console.log('ggggggg');
-        })
+       setSocket(io('https://collab-learn-backend-blond.vercel.app/'));
         
     }, [])
+    useEffect(()=>{
+        socket.emit('joinRoom', ('123'))
+    },[socket])
 
 
     const handleJoinRoom = useCallback((e) => {
