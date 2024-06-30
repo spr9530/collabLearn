@@ -23,6 +23,13 @@ const socket = io('https://collab-learn-backend-blond.vercel.app', {
     withCredentials: true,
     transports: ['websocket', 'polling'],  // Specify transports to use
 });
+socket.on('connect', () => {
+    console.log('Connected to WebSocket server');
+});
+
+socket.on('disconnect', () => {
+    console.log('Disconnected from WebSocket server');
+});
 
 const router = createBrowserRouter([
   {
