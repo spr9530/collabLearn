@@ -10,8 +10,10 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { getUserInfo, updateUserApi } from '../user/userApi';
 import { createRoomApi, roomPermission } from '../roomSlice/RoomApi';
+import io from 'socket.io-client';
 
-function HomePage({ socket }) {
+
+function HomePage() {
 
     const [joinRoomDisplay, setJoinRoomDisplay] = useState('hidden')
     const [createRoomDisplay, setCreateRoomDisplay] = useState('hidden')
@@ -30,7 +32,13 @@ function HomePage({ socket }) {
         }
 
         getUser()
+    const socket = io('https://collab-learn-backend-blond.vercel.app/');
+        socket.on('connection', ()=>{
+            console.log('ggggggg');
+        })
+        
     }, [])
+
 
     const handleJoinRoom = useCallback((e) => {
         e.preventDefault();
