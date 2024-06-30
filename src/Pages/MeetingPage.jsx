@@ -45,11 +45,12 @@ function MeetingPage({socket}) {
     const peer = useRef();
 
     useEffect(() => {
-        const peerInstance = new Peer(`${myId}`, {
-            host: '/',
-            port: '5000',
-            path: '/app/v1/room/meeting',
-            debug: 3,  // Set debug level to see PeerJS logs
+        const peerInstance = new Peer(myId, {
+            host: 'collab-learn-backend-blond.vercel.app',
+            secure: true,  // Use secure connection (https)
+            port: 443,     // Default HTTPS port
+            path: '/peerjs',  // Path configured on your backend for PeerJS
+            debug: 3       // Set debug level to see PeerJS logs
         });
 
         peerInstance.on('open', (id) => {
