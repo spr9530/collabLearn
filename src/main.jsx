@@ -19,9 +19,8 @@ import HomePage from './Pages/HomePage.jsx';
 import SignUp from './user/SignUp.jsx';
 import MeetingPage from './Pages/MeetingPage.jsx';
 
-const socket = io('https://collab-learn-backend-blond.vercel.app', {
-    withCredentials: true,
-    transports: ['websocket', 'polling'],  // Specify transports to use
+const socket = io('wss://collab-learn-backend-blond.vercel.app', {
+    transports: ['websocket', 'polling'],
 });
 socket.on('connect', () => {
     console.log('Connected to WebSocket server');
