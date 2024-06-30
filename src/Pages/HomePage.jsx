@@ -36,8 +36,14 @@ function HomePage() {
        setSocket(io('https://collab-learn-backend-blond.vercel.app/'));
         
     }, [])
+    
     useEffect(()=>{
+        if(socket){
+            console.log('122');
         socket.emit('joinRoom', ('123'))
+            console.log('125');
+            
+        }
     },[socket])
 
 
