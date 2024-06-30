@@ -2,7 +2,7 @@ export const createRoomTask = async (task) => {
   const token = localStorage.getItem('token');
   
   try {
-    const response = await fetch(`http://localhost:5000/app/v1/task/createTask`, {
+    const response = await fetch(`https://collab-learn-backend-blond.vercel.app/app/v1/task/createTask`, {
       method: 'POST', // Use POST for creating new resources
       headers: {
         'Content-Type': 'application/json',
@@ -27,7 +27,7 @@ export const getAllTask = (id) => {
   return new Promise(async (resolve, reject) => {
     const token = localStorage.getItem('token');
     try {
-      const response = await fetch(`http://localhost:5000/app/v1/task/allTask/${id}`, {
+      const response = await fetch(`https://collab-learn-backend-blond.vercel.app/app/v1/task/allTask/${id}`, {
         method: 'GET', // Use POST for creating new resources
         headers: {
           'Content-Type': 'application/json',
@@ -53,7 +53,7 @@ export const getUsersTask = ({id1, id2}) => {
   return new Promise(async(resolve, reject) => {
     const token = localStorage.getItem('token');
     try {
-      const response = await fetch(`http://localhost:5000/app/v1/task/userTask/${id1}/${id2}`, {
+      const response = await fetch(`https://collab-learn-backend-blond.vercel.app/app/v1/task/userTask/${id1}/${id2}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -82,7 +82,7 @@ export const updateTaskStep = ({ id, taskStep }) => {
 
     try {
 
-      const response = await fetch(`http://localhost:5000/app/v1/task/updateTaskStep/${id}`, {
+      const response = await fetch(`https://collab-learn-backend-blond.vercel.app/app/v1/task/updateTaskStep/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -114,7 +114,7 @@ export const deleteUserTask = (id) => {
 
     try {
 
-      const response = await fetch(`http://localhost:5000/app/v1/task/deleteTask/${id}`, {
+      const response = await fetch(`https://collab-learn-backend-blond.vercel.app/app/v1/task/deleteTask/${id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
