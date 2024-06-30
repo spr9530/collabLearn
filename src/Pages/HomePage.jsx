@@ -55,7 +55,7 @@ function HomePage() {
         navigate(`/room/${room._id}/${room.roomCode}`);
     }, [navigate]);
 
-    if (!userInfo) {
+    if (!userInfo && !socket) {
         return <>Loading....</>
     }
     return (
