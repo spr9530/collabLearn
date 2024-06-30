@@ -49,7 +49,7 @@ function MeetingPage({socket}) {
             host: 'collab-learn-backend-blond.vercel.app',
             secure: true,  // Use secure connection (https)
             port: 443,     // Default HTTPS port
-            path: '/peerjs',  // Path configured on your backend for PeerJS
+            path: '/app/v1/room/meeting',  // Path configured on your backend for PeerJS
             debug: 3       // Set debug level to see PeerJS logs
         });
 
