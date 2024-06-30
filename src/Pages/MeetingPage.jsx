@@ -59,7 +59,7 @@ function MeetingPage({socket}) {
         peerInstance.on('call', (call) => {
             navigator.mediaDevices.getUserMedia({
                 video: true,
-                audio: false,
+                audio: true,
             }).then((stream) => {
                 call.answer(stream);
                 call.on('stream', (remoteStream) => {
@@ -81,7 +81,7 @@ function MeetingPage({socket}) {
     // Example function to call another Peer
     const callPeer = (peerId) => {
         navigator.mediaDevices.getUserMedia({
-            video: false,
+            video: true,
             audio: true,
         }).then((stream) => {
             const call = peer.current.call(peerId, stream);
