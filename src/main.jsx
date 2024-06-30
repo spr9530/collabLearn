@@ -19,7 +19,7 @@ import HomePage from './Pages/HomePage.jsx';
 import SignUp from './user/SignUp.jsx';
 import MeetingPage from './Pages/MeetingPage.jsx';
 
-const socket = io('http://localhost:5000');
+const socket = io('https://collab-learn-backend-blond.vercel.app/');
 
 const router = createBrowserRouter([
   {
