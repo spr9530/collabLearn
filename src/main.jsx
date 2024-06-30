@@ -19,7 +19,10 @@ import HomePage from './Pages/HomePage.jsx';
 import SignUp from './user/SignUp.jsx';
 import MeetingPage from './Pages/MeetingPage.jsx';
 
-const socket = io('https://collab-learn-backend-blond.vercel.app');
+const socket = io('https://collab-learn-backend-blond.vercel.app', {
+    transports: ['websocket', 'polling'],
+    withCredentials: true
+});
 
 const router = createBrowserRouter([
   {
