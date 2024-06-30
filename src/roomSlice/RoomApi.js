@@ -1,7 +1,7 @@
 
 export const addRoomData = (data) => {
     return new Promise((resolve, reject) => {
-        fetch('http://localhost:5000/api/v1/room/saveData', {
+        fetch('https://collab-learn-backend-blond.vercel.app/api/v1/room/saveData', {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
@@ -30,7 +30,7 @@ export const createRoomApi = (info) => {
     return new Promise(async (resolve, reject) => {
         try {
             const token = localStorage.getItem('token')
-            const response = await fetch('http://localhost:5000/app/v1/room/createRoom', {
+            const response = await fetch('https://collab-learn-backend-blond.vercel.app/app/v1/room/createRoom', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -52,7 +52,7 @@ export const createRoomApi = (info) => {
 export const getRoomData = (roomId) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const response = await fetch(`http://localhost:5000/app/v1/room/${roomId}`)
+            const response = await fetch(`https://collab-learn-backend-blond.vercel.app/app/v1/room/${roomId}`)
             if (!response.ok) {
                 reject({ error: await response.json() })
             }
@@ -68,7 +68,7 @@ export const getRoomData = (roomId) => {
 export const updateRoomUsers = ({ id2: id, users }) => {
     return new Promise(async (resolve, reject) => {
         try {
-            const response = await fetch(`http://localhost:5000/app/v1/room/${id}`, {
+            const response = await fetch(`https://collab-learn-backend-blond.vercel.app/app/v1/room/${id}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json'
@@ -88,7 +88,7 @@ export const updateRoomUsers = ({ id2: id, users }) => {
 export const getRoomInfo = async (roomCode) => {
     try {
         const token = localStorage.getItem('token')
-        const response = await fetch(`http://localhost:5000/app/v1/room/${roomCode}`,{
+        const response = await fetch(`https://collab-learn-backend-blond.vercel.app/app/v1/room/${roomCode}`,{
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -111,7 +111,7 @@ export const createRoomFile = ({ name, type, parentId, roomId, path }) => {
         try {
 
             const token = localStorage.getItem('token')
-            const createFile = await fetch(`http://localhost:5000/app/v1/room/${roomId}/files`, {
+            const createFile = await fetch(`https://collab-learn-backend-blond.vercel.app/app/v1/room/${roomId}/files`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -143,7 +143,7 @@ export const getRoomFiles = async ({id1:roomId, parentId}) => {
     return new Promise(async (resolve, reject) => {
         const token = localStorage.getItem('token')
         try {
-            const response = await fetch(`http://localhost:5000/app/v1/room/${roomId}/files/${parentId}`,{
+            const response = await fetch(`https://collab-learn-backend-blond.vercel.app/app/v1/room/${roomId}/files/${parentId}`,{
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -167,7 +167,7 @@ export const getRoomFiles = async ({id1:roomId, parentId}) => {
 export const getEditor = async (id) => {
     try {
         console.log('called')
-        const fetchEditor = await fetch(`http://localhost:5000/app/v1/room/getRoomEditor/${id}`)
+        const fetchEditor = await fetch(`https://collab-learn-backend-blond.vercel.app/app/v1/room/getRoomEditor/${id}`)
 
         const data = await fetchEditor.json();
 
@@ -180,7 +180,7 @@ export const getEditor = async (id) => {
 
 export const updateEditor = async ({ id3:id, roomData }) => {
     try {
-        const update = await fetch(`http://localhost:5000/app/v1/room/updateRoomEditors/${id}`, {
+        const update = await fetch(`https://collab-learn-backend-blond.vercel.app/app/v1/room/updateRoomEditors/${id}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -202,7 +202,7 @@ export const updateEditor = async ({ id3:id, roomData }) => {
 
 export const addNewVersion = async ({ id, version, data }) => {
     try {
-        const response = await fetch(`http://localhost:5000/app/v1/room/updateRoomEditors/version/${id}`, {
+        const response = await fetch(`https://collab-learn-backend-blond.vercel.app/app/v1/room/updateRoomEditors/version/${id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
@@ -229,7 +229,7 @@ export const roomPermission = async({roomCode, user})=>{
     const token = localStorage.getItem('token')
     try {
         const token = localStorage.getItem('token')
-        const response = await fetch(`http://localhost:5000/app/v1/room/sendRqst/${roomCode}`,{
+        const response = await fetch(`https://collab-learn-backend-blond.vercel.app/app/v1/room/sendRqst/${roomCode}`,{
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
@@ -252,7 +252,7 @@ export const rejectPermission = async({userId, roomId}) =>{
     const token = localStorage.getItem('token')
     try {
         const token = localStorage.getItem('token')
-        const response = await fetch(`http://localhost:5000/app/v1/room//rqst/${roomId}/reject`,{
+        const response = await fetch(`https://collab-learn-backend-blond.vercel.app/app/v1/room//rqst/${roomId}/reject`,{
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
@@ -275,7 +275,7 @@ export const acceptPermission = async({userId, roomId}) =>{
     const token = localStorage.getItem('token')
     try {
         const token = localStorage.getItem('token')
-        const response = await fetch(`http://localhost:5000/app/v1/room//rqst/${roomId}/accept`,{
+        const response = await fetch(`https://collab-learn-backend-blond.vercel.app/app/v1/room//rqst/${roomId}/accept`,{
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
@@ -297,7 +297,7 @@ export const acceptPermission = async({userId, roomId}) =>{
 export const downloadFiles = async ({ roomId }) => {
     try {
         const token = localStorage.getItem('token');
-        const response = await fetch(`http://localhost:5000/app/v1/room/download/${roomId}`, {
+        const response = await fetch(`https://collab-learn-backend-blond.vercel.app/app/v1/room/download/${roomId}`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`
